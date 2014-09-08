@@ -4,30 +4,12 @@
 #include <catch.hpp>
 
 #include <tetra/meta/MetaData.hpp>
+#include <Widget.hpp>
 
 
 using namespace std;
 using namespace tetra;
 using namespace tetra::meta;
-
-class Widget
-{
-  public:
-    Widget()
-    {
-        ++Widget::count;
-    }
-
-    ~Widget()
-    {
-        --Widget::count;
-    }
-
-  public:
-    static int count;
-};
-
-int Widget::count{0};
 
 SCENARIO( "Create MetaData", "[MetaData]" )
 {

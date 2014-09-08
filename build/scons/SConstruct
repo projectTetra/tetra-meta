@@ -19,12 +19,22 @@ meta = "../../src/tetra/meta/";
 def createSources(sources):
     toRet = [];
     for source in sources:
-        toRet += [ meta + source + '.cpp'
-                 , meta + source + 'Test.cpp'
-                 ]
+        toRet += [ meta + source + '.cpp' ]
     return toRet;
 
+def createTests(sources):
+    toRet = [];
+    for source in sources:
+        toRet += [ meta + source + 'Test.cpp' ];
+    return toRet;
 
-Default( env.Program( target = '../x64/meta'
-                    , source = createSources( [ 'MetaData' ] )
-                    ))
+sources = [ 'MetaData' ];
+
+tests = [ 'MetaData'
+        , 'MetaConstructor' ];
+
+Default( env.Program( target = '../x64/meta',
+                      source = ['../../src/Widget.cpp'] +
+                               createSources( sources ) +
+                               createTests( tests ) ) )
+
