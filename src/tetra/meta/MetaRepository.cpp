@@ -5,9 +5,9 @@ using namespace tetra;
 using namespace tetra::meta;
 
 void MetaRepository::addType( const string& name,
-                              const MetaData* metaData ) noexcept
+                              const MetaData& metaData ) noexcept
 {
-    getMetaDataMap().emplace( name, metaData );
+    getMetaDataMap().emplace( name, &metaData );
 }
 
 const MetaData& MetaRepository::lookupMetaData( const string& name )

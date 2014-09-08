@@ -32,7 +32,8 @@ sources = [ 'MetaData'
           , 'MetaRepository' ];
 
 tests = [ 'MetaData'
-        , 'MetaConstructor' ];
+        , 'MetaConstructor'
+        , 'MetaRepository' ];
 
 Default( env.Program( target = '../x64/meta',
                       source = ['../../src/Widget.cpp'] +

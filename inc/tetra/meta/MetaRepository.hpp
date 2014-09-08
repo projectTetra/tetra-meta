@@ -27,7 +27,7 @@ class MetaRepository
      * @param metaData A non-owning pointer to the type's MetaData
      **/
     static void addType( const std::string& name,
-                         const MetaData* metaData ) noexcept;
+                         const MetaData& metaData ) noexcept;
 
     /**
      * Looks up a type's MetaData using the name used to originally add the type.
