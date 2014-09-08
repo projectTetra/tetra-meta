@@ -28,7 +28,8 @@ def createTests(sources):
         toRet += [ meta + source + 'Test.cpp' ];
     return toRet;
 
-sources = [ 'MetaData' ];
+sources = [ 'MetaData'
+          , 'MetaRepository' ];
 
 tests = [ 'MetaData'
         , 'MetaConstructor' ];
