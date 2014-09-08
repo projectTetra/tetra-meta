@@ -41,6 +41,15 @@ class MetaRepository
     static std::unordered_map<std::string, const MetaData*>& getMetaDataMap();
 };
 
+/**
+ * Helper function for looking up a type's MetaData. This just wraps a call to
+ * MetaRepository::lookupMetaData.
+ * @param typeName The name of the type to look up
+ * @return A const ref to the type's MetaData
+ * @throws std::out_of_range if the name is not in the map.
+ **/
+const MetaData& metaData( const std::string& typeName );
+
 } /* namespace meta */
 } /* namespace tetra */
 

@@ -42,8 +42,8 @@ SCENARIO( "The MetaRepository should support adding and looking up MetaData "
         THEN( "The MetaData returned when looked up should match the stored "
               "MetaData." )
         {
-            const MetaData& meta = MetaRepository::lookupMetaData( "widget" );
-            REQUIRE( &meta == &MetaConstructor<Widget>::getMetaData() );
+            const MetaData& widgetMeta = metaData("widget");
+            REQUIRE( &widgetMeta == &MetaConstructor<Widget>::getMetaData() );
         }
 
         THEN( "The MetaRepository throws a std::out_of_range if the wrong type "
@@ -60,7 +60,7 @@ SCENARIO( "The MetaRepository should support looking up registered types",
 {
     WHEN( "A type is registered with META_REGISTER" )
     {
-        const MetaData& myTypeMeta = MetaRepository::lookupMetaData( "MyType" );
+        const MetaData& myTypeMeta = metaData( "MyType" );
         void* myType = myTypeMeta.construct();
 
         THEN( "The type's constructor should be callable" )

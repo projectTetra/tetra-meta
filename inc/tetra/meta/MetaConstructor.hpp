@@ -38,7 +38,7 @@ class MetaConstructor
 };
 
 template <class T>
-const MetaData& meta()
+const MetaData& metaData()
 {
     return MetaConstructor<T>::getMetaData();
 }
