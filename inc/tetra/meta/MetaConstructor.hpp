@@ -32,7 +32,8 @@ class MetaConstructor
      **/
     static const MetaData& getMetaData() noexcept
     {
-        static MetaData data{&metaConstruct<T>, &metaDestroy<T>, sizeof( T )};
+        static MetaData data{&metaConstruct<T>, &metaDestroy<T>,
+                             &metaCopy<T>,      sizeof( T )};
         return data;
     }
 };

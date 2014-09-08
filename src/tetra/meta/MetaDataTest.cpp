@@ -16,7 +16,7 @@ SCENARIO( "Create MetaData", "[MetaData]" )
     GIVEN( "A Widget class to construct MetaData from" )
     {
         auto data = MetaData{&metaConstruct<Widget>, &metaDestroy<Widget>,
-                             sizeof( Widget )};
+                             &metaCopy<Widget>,      sizeof( Widget )};
         auto* widget = data.construct();
 
         THEN( "The constructor should have side effects" )
@@ -34,6 +34,32 @@ SCENARIO( "Create MetaData", "[MetaData]" )
         {
             REQUIRE( data.size() == sizeof( Widget ) );
         }
+    }
+
+    GIVEN(
+        "Two strings constructed with the MetaData for the std::string class." )
+    {
+        auto data = MetaData{&metaConstruct<string>, &metaDestroy<string>,
+                             &metaCopy<string>,      sizeof( string )};
+        void* str = data.construct();
+        void* str2 = data.construct();
+
+        auto asString = []( void * s )->string &
+        {
+            return *reinterpret_cast<string*>( s );
+        };
+
+        asString( str ) = "hello world";
+
+        THEN( "The MetaData's copy operator should call the actual copy "
+              "operator for the string class." )
+        {
+            data.copy( str2, str );
+            REQUIRE( asString( str2 ) == "hello world" );
+        }
+
+        data.destroy( str );
+        data.destroy( str2 );
     }
 }
 
