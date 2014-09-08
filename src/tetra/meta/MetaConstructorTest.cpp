@@ -10,7 +10,7 @@ using namespace tetra::meta;
 SCENARIO( "Create MetaData with the MetaConstructor",
           "[MetaConstructor][MetaData]" )
 {
-    const MetaData& data = MetaConstructor<Widget>::getMetaData();
+    const MetaData& data = meta<Widget>();
     WHEN( "The MetaConstructor is used to get MetaData for the Widget class" )
     {
         void* widget = data.construct();

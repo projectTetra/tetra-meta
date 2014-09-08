@@ -27,7 +27,14 @@ class MetaConstructor
     }
 };
 
+template <class T>
+const MetaData& meta()
+{
+    return MetaConstructor<T>::getMetaData();
+}
+
 } /* namespace meta */
 } /* namespace tetra */
+
 
 #endif
