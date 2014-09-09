@@ -71,13 +71,6 @@ class MyTypeWithFields
     string myString;
 };
 
-template <class Type, typename MemberType>
-std::size_t MemberOffset( MemberType( Type::*mbr ) )
-{
-    auto ptr = &( reinterpret_cast<Type*>( 0 )->*mbr );
-    return reinterpret_cast<size_t>( ptr );
-}
-
 SCENARIO( "MetaData should be able to record member locations and their "
           "associated MetaData.",
           "[MetaData]" )
@@ -92,10 +85,10 @@ SCENARIO( "MetaData should be able to record member locations and their "
                                &metaCopy<string>,      sizeof( string )};
 
     map<string, MetaData::Member> members = {
-        {"myInt", {MemberOffset( &MyTypeWithFields::myInt ), intMeta}},
-        {"myFloat", {MemberOffset( &MyTypeWithFields::myFloat ), floatMeta}},
+        {"myInt", {memberOffset( &MyTypeWithFields::myInt ), intMeta}},
+        {"myFloat", {memberOffset( &MyTypeWithFields::myFloat ), floatMeta}},
         {"myString",
-         {MemberOffset( &MyTypeWithFields::myString ), stringMeta}}};
+         {memberOffset( &MyTypeWithFields::myString ), stringMeta}}};
 
     auto myTypeWithFieldsMeta = MetaData{
         &metaConstruct<MyTypeWithFields>, &metaDestroy<MyTypeWithFields>,
@@ -126,19 +119,19 @@ SCENARIO( "MetaData should be able to record member locations and their "
                      &intMeta );
 
             REQUIRE( myTypeWithFieldsMeta.member( "myInt" ).offset ==
-                     MemberOffset( &MyTypeWithFields::myInt ) );
+                     memberOffset( &MyTypeWithFields::myInt ) );
 
             REQUIRE( myTypeWithFieldsMeta.member( "myFloat" ).metaData ==
                      &floatMeta );
 
             REQUIRE( myTypeWithFieldsMeta.member( "myFloat" ).offset ==
-                     MemberOffset( &MyTypeWithFields::myFloat ) );
+                     memberOffset( &MyTypeWithFields::myFloat ) );
 
             REQUIRE( myTypeWithFieldsMeta.member( "myString" ).metaData ==
                      &stringMeta );
 
             REQUIRE( myTypeWithFieldsMeta.member( "myString" ).offset ==
-                     MemberOffset( &MyTypeWithFields::myString ) );
+                     memberOffset( &MyTypeWithFields::myString ) );
         }
     }
 }

@@ -147,4 +147,11 @@ class MemberNotFoundException : public std::runtime_error
 std::ostream& operator<<( std::ostream& out,
                           const tetra::meta::MetaData& metaData );
 
+template <class Type, typename MemberType>
+std::size_t memberOffset( MemberType( Type::*mbr ) )
+{
+    auto ptr = &( reinterpret_cast<Type*>( 0 )->*mbr );
+    return reinterpret_cast<std::size_t>( ptr );
+}
+
 #endif

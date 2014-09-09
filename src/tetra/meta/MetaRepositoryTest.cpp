@@ -28,7 +28,7 @@ class MyType
 
 int MyType::count{0};
 
-META_REGISTER( MyType );
+BASE_META_REGISTER( MyType );
 
 SCENARIO( "The MetaRepository should support adding and looking up MetaData "
           "instances",
