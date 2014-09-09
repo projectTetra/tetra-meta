@@ -50,5 +50,25 @@ vector<string> MetaData::members() const noexcept
     return keys;
 }
 
+MetaData::Member MetaData::member( const string& name ) const
+{
+    try
+    {
+        return m_members.at( name );
+    }
+    catch ( const std::out_of_range& r )
+    {
+        // eat the std error and throw a more meaningful one.
+        throw MemberNotFoundException{name};
+    }
+}
 
+MemberNotFoundException::MemberNotFoundException( const string& memberName )
+    : runtime_error{"Member lookup failed: " + memberName}
+    , m_memberName{memberName} {};
+
+const string& MemberNotFoundException::getMemberName() const noexcept
+{
+    return m_memberName;
+}
 

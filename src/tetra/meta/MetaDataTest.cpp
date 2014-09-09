@@ -119,6 +119,27 @@ SCENARIO( "MetaData should be able to record member locations and their "
             REQUIRE( contains( members, "myFloat" ) );
             REQUIRE( contains( members, "myString" ) );
         }
+
+        THEN( "The MetaData for each member should exist and be correct" )
+        {
+            REQUIRE( myTypeWithFieldsMeta.member( "myInt" ).metaData ==
+                     &intMeta );
+
+            REQUIRE( myTypeWithFieldsMeta.member( "myInt" ).offset ==
+                     MemberOffset( &MyTypeWithFields::myInt ) );
+
+            REQUIRE( myTypeWithFieldsMeta.member( "myFloat" ).metaData ==
+                     &floatMeta );
+
+            REQUIRE( myTypeWithFieldsMeta.member( "myFloat" ).offset ==
+                     MemberOffset( &MyTypeWithFields::myFloat ) );
+
+            REQUIRE( myTypeWithFieldsMeta.member( "myString" ).metaData ==
+                     &stringMeta );
+
+            REQUIRE( myTypeWithFieldsMeta.member( "myString" ).offset ==
+                     MemberOffset( &MyTypeWithFields::myString ) );
+        }
     }
 }
 

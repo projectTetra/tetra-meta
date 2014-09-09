@@ -112,12 +112,12 @@ class MetaData
     std::vector<std::string> members() const noexcept;
 
     /**
-     * Returns the MetaData for the member.
+     * Retrieve information about a member.
      * @param name The name of the member to retrieve MetaData for.
-     * @return The member's MetaData.
+     * @return The Member structure containing the member's offset and MetaData.
      * @throws MemberNotFound if the member is not present.
      **/
-    const MetaData& memberMetaData( const std::string& name ) const;
+    Member member( const std::string& name ) const;
 
   private:
     const CtorFctn m_constructor;
@@ -125,6 +125,20 @@ class MetaData
     const CopyFctn m_copy;
     const std::size_t m_size; 
     const std::map<std::string, Member> m_members;
+};
+
+/**
+ * Thrown when a member lookup fails in the MetaData class.
+ **/
+class MemberNotFoundException : public std::runtime_error
+{
+  public:
+    MemberNotFoundException( const std::string& memberName );
+
+    const std::string& getMemberName() const noexcept;
+
+  private:
+    const std::string m_memberName;
 };
 
 } /* namespace meta */
