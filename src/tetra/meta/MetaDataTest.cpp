@@ -1,11 +1,11 @@
 #include <iostream>
+#include <algorithm>
 
 #define CATCH_CONFIG_MAIN
 #include <catch.hpp>
 
 #include <tetra/meta/MetaData.hpp>
 #include <Widget.hpp>
-
 
 using namespace std;
 using namespace tetra;
@@ -60,6 +60,65 @@ SCENARIO( "Create MetaData", "[MetaData]" )
 
         data.destroy( str );
         data.destroy( str2 );
+    }
+}
+
+class MyTypeWithFields
+{
+  public:
+    int myInt;
+    float myFloat;
+    string myString;
+};
+
+template <class Type, typename MemberType>
+std::size_t MemberOffset( MemberType( Type::*mbr ) )
+{
+    auto ptr = &( reinterpret_cast<Type*>( 0 )->*mbr );
+    return reinterpret_cast<size_t>( ptr );
+}
+
+SCENARIO( "MetaData should be able to record member locations and their "
+          "associated MetaData.",
+          "[MetaData]" )
+{
+    auto intMeta = MetaData{&metaConstruct<int>, &metaDestroy<int>,
+                            &metaCopy<int>,      sizeof( int )};
+
+    auto floatMeta = MetaData{&metaConstruct<float>, &metaDestroy<float>,
+                              &metaCopy<float>,      sizeof( float )};
+
+    auto stringMeta = MetaData{&metaConstruct<string>, &metaDestroy<string>,
+                               &metaCopy<string>,      sizeof( string )};
+
+    map<string, MetaData::Member> members = {
+        {"myInt", {MemberOffset( &MyTypeWithFields::myInt ), intMeta}},
+        {"myFloat", {MemberOffset( &MyTypeWithFields::myFloat ), floatMeta}},
+        {"myString",
+         {MemberOffset( &MyTypeWithFields::myString ), stringMeta}}};
+
+    auto myTypeWithFieldsMeta = MetaData{
+        &metaConstruct<MyTypeWithFields>, &metaDestroy<MyTypeWithFields>,
+        &metaCopy<MyTypeWithFields>,      sizeof( MyTypeWithFields ),
+        members};
+
+    GIVEN( "MetaData for a type with fields" )
+    {
+        auto members = myTypeWithFieldsMeta.members();
+        auto contains = []( const vector<string> memberList,
+                            const string & member )
+        {
+            return find( begin( memberList ), end( memberList ), member ) !=
+                   end( memberList );
+        };
+
+        THEN(
+            "The MetaData should contain member information for those fields" )
+        {
+            REQUIRE( contains( members, "myInt" ) );
+            REQUIRE( contains( members, "myFloat" ) );
+            REQUIRE( contains( members, "myString" ) );
+        }
     }
 }
 

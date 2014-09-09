@@ -3,6 +3,8 @@
 #define TETRA_META_METADATA_CPP
 
 #include <cstddef>
+#include <map>
+#include <vector>
 
 namespace tetra
 {
@@ -52,6 +54,17 @@ class MetaData
     using CtorFctn = void* ( * )();
     using DtorFctn = void ( * )( void* );
     using CopyFctn = void ( * )( void*, void* );
+    using Offset = std::size_t;
+
+    struct Member
+    {
+        Member() = default;
+        inline Member( Offset o, const MetaData& meta )
+            : offset{o}, metaData{&meta} {};
+
+        Offset offset;
+        const MetaData* metaData;
+    };
 
   public:
     /**
@@ -60,8 +73,11 @@ class MetaData
      * @param dtor Function which destroys an instance of the type.
      * @param copy Function which copys an instance of the type.
      * @param size The size of the type.
+     * @param members A map of names to Member structs describing this type's
+     *                members.
      **/
-    MetaData( CtorFctn ctor, DtorFctn dtor, CopyFctn copy, std::size_t size );
+    MetaData( CtorFctn ctor, DtorFctn dtor, CopyFctn copy, std::size_t size,
+              const std::map<std::string, Member>& members = {} );
 
     /**
      * Calls the meta-data constructor, returns an unmanaged pointer to the
@@ -90,14 +106,31 @@ class MetaData
      **/
     std::size_t size() const noexcept;
 
+    /**
+     * Returns a vector of this type's member names.
+     **/
+    std::vector<std::string> members() const noexcept;
+
+    /**
+     * Returns the MetaData for the member.
+     * @param name The name of the member to retrieve MetaData for.
+     * @return The member's MetaData.
+     * @throws MemberNotFound if the member is not present.
+     **/
+    const MetaData& memberMetaData( const std::string& name ) const;
+
   private:
     const CtorFctn m_constructor;
     const DtorFctn m_destructor;
     const CopyFctn m_copy;
     const std::size_t m_size; 
+    const std::map<std::string, Member> m_members;
 };
 
 } /* namespace meta */
 } /* namespace tetra */
+
+std::ostream& operator<<( std::ostream& out,
+                          const tetra::meta::MetaData& metaData );
 
 #endif
