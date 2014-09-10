@@ -29,11 +29,15 @@ def createTests(sources):
     return toRet;
 
 sources = [ 'MetaData'
-          , 'MetaRepository' ];
+          , 'MetaRepository' 
+          , 'Variant' 
+          ];
 
 tests = [ 'MetaData'
         , 'MetaConstructor'
-        , 'MetaRepository' ];
+        , 'MetaRepository'
+        , 'Variant'
+        ];
 
 Default( env.Program( target = '../x64/meta',
                       source = ['../../src/Widget.cpp'] +
