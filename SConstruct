@@ -6,13 +6,15 @@ env['CXXFLAGS'] = "-std=c++11"
 
 buildLib = env.Library('./bin/tetraMeta', Glob('src/*/*/*.cpp'))
 
+env['CPPPATH'] += ['./tst']
 env['LIBS'] = [ 'tetraMeta' ]
-buildTests = env.Program('./bin/catchTests', Glob('tst/*.cpp'));
+buildTests = env.Program('./bin/catchTests.out', 
+                         Glob('tst/*.cpp') + Glob('tst/*/*/*.cpp'));
 Depends(buildTests, buildLib)
 
 runTests = Command( target = "runTests"
-                  , source = "./bin/catchTests"
-                  , action = [ "./bin/catchTests" ]
+                  , source = "./bin/catchTests.out"
+                  , action = [ "./bin/catchTests.out" ]
                   )
 
 Depends(runTests, buildTests)

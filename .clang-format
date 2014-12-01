@@ -1,6 +1,6 @@
 ---
 AccessModifierOffset: -2
-ConstructorInitializerIndentWidth: 4
+ConstructorInitializerIndentWidth: 2
 AlignEscapedNewlinesLeft: false
 AlignTrailingComments: true
 AllowAllParametersOfDeclarationOnNextLine: true
@@ -12,7 +12,7 @@ BreakBeforeBinaryOperators: false
 BreakBeforeTernaryOperators: true
 BreakConstructorInitializersBeforeComma: true
 BinPackParameters: true
-ColumnLimit:     80
+ColumnLimit:     70
 ConstructorInitializerAllOnOneLineOrOnePerLine: true
 DerivePointerBinding: false
 ExperimentalAutoDetectBinPacking: false
@@ -30,8 +30,8 @@ PointerBindsToType: true
 SpacesBeforeTrailingComments: 1
 Cpp11BracedListStyle: true
 Standard:        Cpp11
-IndentWidth:     4
-TabWidth:        4
+IndentWidth:     2
+TabWidth:        2
 UseTab:          Never
 BreakBeforeBraces: Allman
 IndentFunctionDeclarationAfterType: false
@@ -41,6 +41,6 @@ SpaceInEmptyParentheses: false
 SpacesInCStyleCastParentheses: false
 SpaceAfterControlStatementKeyword: true
 SpaceBeforeAssignmentOperators: true
-ContinuationIndentWidth: 4
+ContinuationIndentWidth: 2
 ...
 
