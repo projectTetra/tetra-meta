@@ -33,7 +33,7 @@ public:
 class MetaRepository
 {
   std::map<std::string, const MetaData*> nameToMetaMap;
-  std::map<const MetaData*, const std::string*> metaToNameMap;
+  std::map<const MetaData*, std::string> metaToNameMap;
 
 public:
   /**
@@ -65,7 +65,7 @@ public:
    * @param typeName The name of the type to look up.
    * @return const ref to the MetaData for the type.
    **/
-  const MetaData& getMetaData( const std::string& typeName );
+  const MetaData& getMetaData( const std::string& typeName ) const;
 
   /**
    * Returns the name for the registered type.
@@ -73,7 +73,7 @@ public:
    * @param metaData MetaData for the type.
    * @return The typename associated with the metaData.
    **/
-  const std::string& getTypeName( const MetaData& metaData );
+  const std::string& getTypeName( const MetaData& metaData ) const;
 
   /**
    * Uses the registered MetaData to create an instance of the
@@ -85,7 +85,7 @@ public:
    * @return A Variant containing an instance of the type that you
    *         requested.
    **/
-  Variant createInstance( const std::string& typeName );
+  Variant createInstance( const std::string& typeName ) const;
 
 private:
   /**
