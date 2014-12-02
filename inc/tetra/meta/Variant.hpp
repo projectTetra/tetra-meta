@@ -47,8 +47,9 @@ public:
   template <typename T>
   static Variant create( T&& toStore ) noexcept
   {
-    Variant v{MetaData::create<T>()};
-    v.getObject<T>() = toStore;
+    using Type = typename std::remove_reference<T>::type;
+    Variant v{MetaData::create<Type>()};
+    v.getObject<Type>() = toStore;
 
     return v;
   }
