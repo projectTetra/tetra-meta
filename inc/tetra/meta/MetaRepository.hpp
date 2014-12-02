@@ -5,7 +5,7 @@
 #include <tetra/meta/Variant.hpp>
 
 #include <stdexcept>
-#include <unordered_map>
+#include <map>
 
 namespace tetra
 {
@@ -24,7 +24,7 @@ public:
   TypeNotRegisteredException();
   TypeNotRegisteredException( const std::string& typeName );
 
-  const std::string& getTypeName();
+  const std::string& getTypeName() const noexcept;
 };
 
 /**
@@ -32,16 +32,21 @@ public:
  **/
 class MetaRepository
 {
-  std::unordered_map<std::string, const MetaData*> nameToMetaMap;
-  std::unordered_map<const MetaData*, const std::string*>
-    metaToNameMap;
+  std::map<std::string, const MetaData*> nameToMetaMap;
+  std::map<const MetaData*, const std::string*> metaToNameMap;
 
 public:
   /**
    * Adds MetaData for the basic primitive types: int, float, double,
-   * char,std::string, std::wstring.
+   * char, string, wstring.
    **/
   MetaRepository();
+  
+  // Copy and Move operations are defaulted
+  MetaRepository( const MetaRepository& ) = default;
+  MetaRepository( MetaRepository&& ) = default;
+  MetaRepository& operator=( const MetaRepository& ) = default;
+  MetaRepository& operator=( MetaRepository&& ) = default;
 
   /**
    * Adds a new type to the MetaRepository, does nothing if T is
@@ -69,6 +74,18 @@ public:
    * @return The typename associated with the metaData.
    **/
   const std::string& getTypeName( const MetaData& metaData );
+
+  /**
+   * Uses the registered MetaData to create an instance of the
+   * Variant.
+   * @throws TypeNotRegistered if the requested type has not been
+   *         registered.
+   * @param typeName The registered typeName of the type that you want
+   *        to create.
+   * @return A Variant containing an instance of the type that you
+   *         requested.
+   **/
+  Variant createInstance( const std::string& typeName );
 
 private:
   /**
