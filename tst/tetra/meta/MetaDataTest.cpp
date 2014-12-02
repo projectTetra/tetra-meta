@@ -10,11 +10,12 @@ using namespace tetra::meta;
 
 SCENARIO( "Creating MetaData for the a Widget.", "[MetaData]" )
 {
-  MetaData metaData = MetaData::create<Widget>( "Widget" );
+  const MetaData& metaData = MetaData::create<Widget>();
 
   GIVEN( "MetaData for a Widget" )
   {
-    THEN( "We should be able to construct an instance of the Widget type" )
+    THEN( "We should be able to construct an instance of the Widget "
+          "type" )
     {
       void* obj = metaData.constructInstance();
       REQUIRE( Widget::getInstanceCount() == 1 );
@@ -23,7 +24,8 @@ SCENARIO( "Creating MetaData for the a Widget.", "[MetaData]" )
       delete pWidget;
     }
 
-    THEN( "We should be able to destroy an instance of the Widget type" )
+    THEN(
+      "We should be able to destroy an instance of the Widget type" )
     {
       REQUIRE( Widget::getInstanceCount() == 0 );
       Widget* pWidget = new Widget();
@@ -35,17 +37,12 @@ SCENARIO( "Creating MetaData for the a Widget.", "[MetaData]" )
       REQUIRE( Widget::getInstanceCount() == 0 );
     }
 
-    THEN( "The MetaData should hold the typeid of the Widget type" )
+    THEN(
+      "All MetaData for a given type should be identically equal" )
     {
-      REQUIRE( typeid( Widget ) == metaData.getTypeInfo() );
-    }
-
-    THEN( "A separate instance of MetaData for the same type should "
-          "be considered 'equal' to the given instance" )
-    {
-      MetaData differentMetaData =
-        MetaData::create<Widget>( "Widget" );
-
+      const MetaData& differentMetaData = MetaData::create<Widget>();
+      
+      REQUIRE( &metaData == &differentMetaData );
       REQUIRE( metaData == differentMetaData );
     }
   }

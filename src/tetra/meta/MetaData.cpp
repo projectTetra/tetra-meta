@@ -6,29 +6,14 @@ using namespace tetra;
 using namespace tetra::meta;
 
 MetaData::MetaData( MetaConstructor constructor,
-                    MetaDestructor destructor,
-                    const std::type_info& typeInfo,
-                    const std::string& typeName )
-  : typeName{typeName}
-  , typeConstructor{constructor}
-  , typeDestructor{destructor}
-  , typeInfo{typeInfo}
+                    MetaDestructor destructor )
+  : typeConstructor{constructor}, typeDestructor{destructor}
 {
 }
 
 bool MetaData::operator==( const MetaData& metaData ) const noexcept
 {
-  return this->getTypeInfo() == metaData.getTypeInfo();
-}
-
-const std::string& MetaData::getTypeName() const noexcept
-{
-  return this->typeName;
-}
-
-const std::type_info& MetaData::getTypeInfo() const noexcept
-{
-  return this->typeInfo;
+  return this == &metaData;
 }
 
 void* MetaData::constructInstance() const noexcept

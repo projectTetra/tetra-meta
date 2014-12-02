@@ -11,39 +11,44 @@ namespace meta
 {
 
 /**
- * Holds MetaData for a class including the class's name, the
- * class's size, and methods for constructing/destroying instances
- * of the class.
+ * Holds function pointers which facilitate the safe construction and
+ * destruction of a given class. Instances are unique for given types.
  **/
 class MetaData
 {
   using MetaConstructor = void* ( * )();
   using MetaDestructor = void ( * )( void* );
 
-  const std::string typeName;
   const MetaConstructor typeConstructor;
   const MetaDestructor typeDestructor;
-  const std::type_info& typeInfo;
 
 public:
   /**
    * Creates a MetaData instance to represent the templated
    * type.
    * @templateParam The type to be represented
-   * @return MetaData for the template parameter
+   * @return MetaData for the template parameter, has program-life
+   *         lifetime, and is unique for this type.
    **/
   template <typename T>
-  static MetaData create( const std::string& typeName )
+  static const MetaData& create()
   {
-    return MetaData( metaConstructor<T>, metaDestructor<T>,
-                     typeid( T ), typeName );
+    static MetaData metaData( metaConstructor<T>, metaDestructor<T> );
+    return metaData;
   }
 
-  bool operator==(const MetaData& metaData) const noexcept;
-
-  const std::string& getTypeName() const noexcept;
-
-  const std::type_info& getTypeInfo() const noexcept;
+  /**
+   * MetaData cannot be copied or moved, instances returned by
+   * the create method are unique.
+   **/
+  MetaData( const MetaData& metaData ) = delete;
+  MetaData& operator=( const MetaData& metaData ) = delete;
+  
+  /**
+   * Compares two instances of MetaData, true only if they
+   * describe the same type.
+   **/
+  bool operator==( const MetaData& metaData ) const noexcept;
 
   /**
    * Constructs an instance of the class that this MetaData
@@ -60,9 +65,7 @@ public:
   void destroyInstance( void* obj ) const noexcept;
 
 private:
-  MetaData( MetaConstructor constructor, MetaDestructor destructor,
-            const std::type_info& typeInfo,
-            const std::string& typeName );
+  MetaData( MetaConstructor constructor, MetaDestructor destructor );
 
   template <typename T>
   static void* metaConstructor()

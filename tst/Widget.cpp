@@ -5,6 +5,7 @@ int Widget::instanceCount{0};
 Widget::Widget()
 {
   ++instanceCount;
+  this->myName = "Widget{" + std::to_string( instanceCount ) + "}";
 }
 
 Widget::~Widget()
@@ -12,7 +13,12 @@ Widget::~Widget()
   --instanceCount;
 }
 
-int Widget::getInstanceCount()
+const std::string& Widget::getMyName() const noexcept
+{
+  return this->myName;
+}
+
+int Widget::getInstanceCount() noexcept
 {
   return instanceCount;
 }
