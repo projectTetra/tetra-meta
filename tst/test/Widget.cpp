@@ -1,4 +1,6 @@
-#include <Widget.hpp>
+#include <test/Widget.hpp>
+
+using namespace test;
 
 int Widget::instanceCount{0};
 

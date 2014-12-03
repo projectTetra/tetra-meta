@@ -1,10 +1,11 @@
 #include <catch.hpp>
 
-#include <Widget.hpp>
+#include <test/Widget.hpp>
 #include <tetra/meta/Variant.hpp>
 
 using namespace tetra;
 using namespace tetra::meta;
+using namespace test;
 
 SCENARIO(
   "Variants should be safely hold data using a type's MetaData",

@@ -4,6 +4,9 @@
 
 #include <string>
 
+namespace test
+{
+
 /**
  * Used by the various MetaData tests.
  **/
@@ -22,5 +25,7 @@ public:
 
   const std::string& getMyName() const noexcept;
 };
+
+} /* namespace test */
 
 #endif

@@ -1,11 +1,12 @@
 #include <catch.hpp>
 
-#include <Widget.hpp>
+#include <test/Widget.hpp>
 #include <tetra/meta/MetaRepository.hpp>
 
 using namespace std;
 using namespace tetra;
 using namespace tetra::meta;
+using test::Widget;
 
 SCENARIO(
   "Using the MetaRepository to map names to MetaData instances",
