@@ -4,6 +4,8 @@
 
 #include <tetra/meta/Variant.hpp>
 
+#include <json/json-forwards.h>
+
 #include <stdexcept>
 #include <map>
 
@@ -86,6 +88,27 @@ public:
    *         requested.
    **/
   Variant createInstance( const std::string& typeName ) const;
+
+  /**
+   * Uses the Variant's serialize method to serialize the object into
+   * the root node.
+   * @throws TypeNotRegistered if the Variant contains an unregistered
+   *         type
+   * @param obj The object to serialize.
+   * @param root The Json::Value to serialize into.
+   * @return The return of the Variant's serialize method.
+   **/
+  bool serialize( const Variant& obj, Json::Value& root ) const;
+
+  /**
+   * Deserializes the object described by the Json::Value into a new
+   * Variant. Throws a TypeNotRegistered exception if the
+   * deserialization fails.
+   * @throws TypeNotRegistered if deserialization fails.
+   * @param root The Json::Value to deserialize from.
+   * @return A variant containing the deserialized object.
+   **/
+  Variant deserialize( Json::Value& root ) const;
 
 private:
   /**

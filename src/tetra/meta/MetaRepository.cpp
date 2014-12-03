@@ -1,5 +1,7 @@
 #include <tetra/meta/MetaRepository.hpp>
 
+#include <json/json.h>
+
 using namespace std;
 using namespace tetra;
 using namespace tetra::meta;
@@ -31,6 +33,36 @@ MetaRepository::MetaRepository()
   add(string);
   add(wstring);
 #undef add
+}
+
+bool MetaRepository::serialize( const Variant& obj,
+                                Json::Value& root ) const
+{
+  string typeName = getTypeName( obj.getMetaData() );
+
+  Json::Value object{};
+  bool success = obj.serialize( object );
+
+  if ( !success ) return false; // do nothing to root when failed
+
+  root["type"] = typeName;
+  root["object"] = object;
+
+  return true;
+}
+
+Variant MetaRepository::deserialize( Json::Value& root ) const
+{
+  string typeName = root.get( "type", "" ).asString();
+  const MetaData& typeMetaData = getMetaData( typeName );
+  Json::Value object = root.get( "object", 0 );
+
+  if ( !object.isObject() ) throw TypeNotRegisteredException{};
+
+  Variant var{ typeMetaData };
+  var.deserialize( object );
+
+  return var;
 }
 
 const MetaData&
