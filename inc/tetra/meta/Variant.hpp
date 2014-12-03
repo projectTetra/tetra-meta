@@ -55,7 +55,7 @@ public:
   {
     using Type = typename std::remove_reference<T>::type;
     Variant v{MetaData::create<Type>()};
-    v.getObject<Type>() = toStore;
+    v.getObject<Type>() = std::forward<T&&>( toStore );
 
     return v;
   }
