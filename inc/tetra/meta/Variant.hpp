@@ -33,6 +33,12 @@ class Variant
 
 public:
   /**
+   * Creates an empty variant that always throws a TypeCastException
+   * when getObject is called.
+   **/
+  Variant() = default;
+
+  /**
    * Creates a new Variant which holds an instance of the class
    * that the provided MetaData describes.
    **/
@@ -49,7 +55,7 @@ public:
   {
     using Type = typename std::remove_reference<T>::type;
     Variant v{MetaData::create<Type>()};
-    v.getObject<Type>() = toStore;
+    v.getObject<Type>() = std::forward<T&&>( toStore );
 
     return v;
   }
