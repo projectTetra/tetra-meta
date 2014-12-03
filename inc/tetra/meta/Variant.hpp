@@ -33,6 +33,12 @@ class Variant
 
 public:
   /**
+   * Creates an empty variant that always throws a TypeCastException
+   * when getObject is called.
+   **/
+  Variant() = default;
+
+  /**
    * Creates a new Variant which holds an instance of the class
    * that the provided MetaData describes.
    **/
