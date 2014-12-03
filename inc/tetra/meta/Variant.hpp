@@ -4,6 +4,8 @@
 
 #include <tetra/meta/MetaData.hpp>
 
+#include <json/json-forwards.h>
+
 #include <stdexcept>
 
 namespace tetra
@@ -104,6 +106,30 @@ public:
 
     return *reinterpret_cast<T*>( pObj );
   }
+
+  /**
+   * Serializes the object into the Json::Value node.
+   * If the object does not support serialization
+   * (metaData.canSerialize() == false) then this is just a no-op.
+   * @param root The root Json::Value node to serialize the object
+   *             into.
+   * @return false if the object does not support serialization,
+   *         otherwise this is the value returned by the object's
+   *         MetaData's serialize method.
+   **/
+  bool serialize( Json::Value& root ) const;
+
+  /**
+   * Deserializes the object from the Json::Value node.
+   * If the object does not support serialization then this is a
+   * no-op.
+   * @param root The root Json::Value node to deserialize the
+   *             object from.
+   * @return false if the object does not support serialization,
+   *         otherwise this is the value returned by the object's
+   *         MetaData's deserialize method.
+   **/
+  bool deserialize( Json::Value& root );
 };
 
 } /* namespace meta */

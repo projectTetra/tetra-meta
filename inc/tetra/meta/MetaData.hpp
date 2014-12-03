@@ -26,8 +26,8 @@ class MetaData
 {
   using MetaConstructor = void* ( * )();
   using MetaDestructor = void ( * )( void* );
-  using MetaSerializer = void ( * )( void*, Json::Value& );
-  using MetaDeserializer = void (*) ( void*, Json::Value& );
+  using MetaSerializer = bool ( * )( void*, Json::Value& );
+  using MetaDeserializer = bool (*) ( void*, Json::Value& );
   
   const bool supportsSerialization{false};
   const MetaConstructor typeConstructor;
@@ -96,7 +96,7 @@ public:
    * @param obj The object to serialize
    * @param root The Json::Value to serialize the object into.
    **/
-  void serializeInstance( void* obj, Json::Value& root ) const;
+  bool serializeInstance( void* obj, Json::Value& root ) const;
 
   /**
    * Deserializes the object from the Json::Value node.
@@ -105,7 +105,7 @@ public:
    * @param obj The object to deserialize into
    * @param root The Json::Value node to deserialize from.
    **/
-  void deserializeInstance( void* obj, Json::Value& root ) const;
+  bool deserializeInstance( void* obj, Json::Value& root ) const;
 
 private:
   MetaData( MetaConstructor constructor, MetaDestructor destructor );
@@ -137,15 +137,15 @@ private:
   };
 
   template <typename T>
-  static void metaSerialize( void* obj, Json::Value& root )
+  static bool metaSerialize( void* obj, Json::Value& root )
   {
-    serialize( *reinterpret_cast<T*>( obj ), root );
+    return serialize( *reinterpret_cast<T*>( obj ), root );
   }
 
   template <typename T>
-  static void metaDeserialize( void* obj, Json::Value& root )
+  static bool metaDeserialize( void* obj, Json::Value& root )
   {
-    deserialize( *reinterpret_cast<T*>( obj ), root );
+    return deserialize( *reinterpret_cast<T*>( obj ), root );
   }
 
   template <typename T>

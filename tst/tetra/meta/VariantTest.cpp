@@ -1,11 +1,63 @@
-#include <catch.hpp>
-
-#include <test/Widget.hpp>
 #include <tetra/meta/Variant.hpp>
+
+#include <catch.hpp>
+#include <json/json.h>
+#include <test/Widget.hpp>
+#include <test/VectorComponent.hpp>
 
 using namespace tetra;
 using namespace tetra::meta;
-using namespace test;
+using test::Widget;
+using test::VectorComponent;
+
+SCENARIO( "Serializing and Deserializing Variants",
+          "[Variant][Serialization]" )
+{
+  GIVEN( "A Variant constructed from a Widget" )
+  {
+    Variant variant = Variant::create( Widget{} );
+
+    THEN( "Serializing and Deserializing the object should return "
+          "false (not supported)" )
+    {
+      Json::Value root{};
+
+      REQUIRE( variant.serialize( root ) == false );
+      REQUIRE( variant.deserialize( root ) == false );
+    }
+  }
+
+  GIVEN( "A Variant constructed from a VectorComponent" )
+  {
+    Variant variant =
+      Variant::create( VectorComponent{3.0f, 1.0f, 2.0f} );
+
+    THEN( "Serializing the variant should be successfull" )
+    {
+      Json::Value root{};
+      REQUIRE( variant.serialize( root ) );
+
+      REQUIRE( root.get( "x", 0.0f ).asFloat() == 3.0f );
+      REQUIRE( root.get( "y", 0.0f ).asFloat() == 1.0f );
+      REQUIRE( root.get( "z", 0.0f ).asFloat() == 2.0f );
+    }
+
+    THEN( "Deserializing the variant should be successful" )
+    {
+      Json::Value root{};
+      root["x"] = -4.0f;
+      root["y"] = 1000.0f;
+      root["z"] = 23.5f;
+
+      REQUIRE( variant.deserialize( root ) );
+      
+      auto& vectorComponent = variant.getObject<VectorComponent>();
+      REQUIRE( vectorComponent.getX() == -4.0f );
+      REQUIRE( vectorComponent.getY() == 1000.0f );
+      REQUIRE( vectorComponent.getZ() == 23.5f );
+    }
+  }
+}
 
 SCENARIO(
   "Variants should be safely hold data using a type's MetaData",

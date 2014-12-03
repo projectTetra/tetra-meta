@@ -43,13 +43,13 @@ bool MetaData::canSerialize() const noexcept
   return this->supportsSerialization;
 }
 
-void MetaData::serializeInstance( void* obj, Json::Value& root ) const
+bool MetaData::serializeInstance( void* obj, Json::Value& root ) const
 {
-  this->typeSerializer( obj, root );
+  return this->typeSerializer( obj, root );
 }
 
-void MetaData::deserializeInstance( void* obj,
+bool MetaData::deserializeInstance( void* obj,
                                     Json::Value& root ) const
 {
-  this->typeDeserializer( obj, root );
+  return this->typeDeserializer( obj, root );
 }

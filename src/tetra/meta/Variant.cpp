@@ -40,6 +40,22 @@ Variant& Variant::operator=( Variant&& variant ) noexcept
   return *this;
 }
 
+bool Variant::serialize( Json::Value& root ) const
+{
+  if (!getMetaData().canSerialize())  
+    return false;
+
+  return getMetaData().serializeInstance( this->pObj, root );
+}
+
+bool Variant::deserialize( Json::Value& root )
+{
+  if (!getMetaData().canSerialize())
+    return false;
+
+  return getMetaData().deserializeInstance( this->pObj, root );
+}
+
 const MetaData& Variant::getMetaData() const noexcept
 {
   return *metaData;
