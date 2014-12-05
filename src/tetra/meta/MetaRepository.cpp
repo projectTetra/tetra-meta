@@ -35,29 +35,22 @@ MetaRepository::MetaRepository()
 #undef add
 }
 
-bool MetaRepository::serialize( const Variant& obj,
+void MetaRepository::serialize( const Variant& obj,
                                 Json::Value& root ) const
 {
-  string typeName = getTypeName( obj.getMetaData() );
-
+  root["type"] = getTypeName( obj.getMetaData() );
+  
   Json::Value object{};
-  bool success = obj.serialize( object );
-
-  if ( !success ) return false; // do nothing to root when failed
-
-  root["type"] = typeName;
-  root["object"] = object;
-
-  return true;
+  if ( obj.serialize( object ) ) // serialize
+    root["object"] = object;     // only write on success
 }
 
 Variant MetaRepository::deserialize( Json::Value& root ) const
 {
   string typeName = root.get( "type", "" ).asString();
   const MetaData& typeMetaData = getMetaData( typeName );
-  Json::Value object = root.get( "object", 0 );
 
-  if ( !object.isObject() ) throw TypeNotRegisteredException{};
+  Json::Value object = root.get( "object", 0 );
 
   Variant var{ typeMetaData };
   var.deserialize( object );

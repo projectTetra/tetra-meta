@@ -92,13 +92,14 @@ public:
   /**
    * Uses the Variant's serialize method to serialize the object into
    * the root node.
+   * Even if the Variant does not support serialization, this will
+   * still write the Variant type to the Json node.
    * @throws TypeNotRegistered if the Variant contains an unregistered
    *         type
    * @param obj The object to serialize.
    * @param root The Json::Value to serialize into.
-   * @return The return of the Variant's serialize method.
    **/
-  bool serialize( const Variant& obj, Json::Value& root ) const;
+  void serialize( const Variant& obj, Json::Value& root ) const;
 
   /**
    * Deserializes the object described by the Json::Value into a new

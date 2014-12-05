@@ -17,6 +17,32 @@ SCENARIO(
   "Using the MetaRepository to serialize and deserialize objects",
   "[MetaRepository][Serialization]" )
 {
+  GIVEN( "A MetaRepository with Widgets registered" )
+  {
+    MetaRepository metaRepository{};
+    metaRepository.addType<Widget>( "Widget" );
+
+    THEN( "Serializing the Widget should result in just writing the "
+          "name of the variant type" )
+    {
+      Variant widget = Variant::create( Widget{} );
+      Json::Value root;
+      metaRepository.serialize( widget, root );
+
+      REQUIRE( root.get( "type", "" ).asString() == "Widget" );
+    }
+
+    THEN( "Deserializing the Widget should just result in creating a "
+          "new Widget" )
+    {
+      Json::Value root;
+      root["type"] = "Widget";
+      
+      Variant widget = metaRepository.deserialize( root ); 
+      REQUIRE( widget.getMetaData() == MetaData::create<Widget>() );
+    }
+  }
+
   GIVEN( "A MetaRepository with VectorComponents registered" )
   {
     MetaRepository metaRepository{};
@@ -49,7 +75,7 @@ SCENARIO(
         Variant::create( VectorComponent{1.0f, 2.0f, 3.0f} );
       Json::Value root{};
 
-      REQUIRE( metaRepository.serialize( vector3d, root ) );
+      metaRepository.serialize( vector3d, root );
       REQUIRE( root.get( "type", "" ).asString() ==
                vectorComponentTypeName );
       
