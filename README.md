@@ -16,6 +16,7 @@ of serializing and deserializing objects.
   * [*MetaData*](#metadata)
   * [*Variant*](#variant)
   * [*MetaRepository*](#metarepository)
+* [**Serialization Support**](#serialization-support)
 * [**Conclusion**](#conclusion)
 * [**Future Work**](#future-work)
 
@@ -189,6 +190,60 @@ Variant someObject = repository.deserialize( root );
 if (someObject.getMetaData() == MetaData::create<Widget>())
   // do widget stuff
 ```
+
+## Serialization Support
+
+Serialization in the tetra-meta library is facilitated by the jsoncpp library,
+which is bundled with tetra-meta.
+
+Enabling serialization for a type is fairly simple, you need to define two
+functions within the same namespace as the type:
+
+```C++
+bool serialize( const Type& obj, Json::Value& root );
+bool deserialize( Type& obj, const Json::Value& root );
+```
+
+An example of how you might implement these is:
+
+
+```C++
+namespace foo
+{
+  struct Widget {
+    string name;
+    string state;
+  };
+
+  bool serialize( const Widget& widget, Json::Value& root )
+  {
+    root["name"] = widget.name;
+    root["state"] = widget.state;
+  }
+
+  bool deserialize( Widget& widget, const Json::Value& root )
+  {
+    widget.name = root.get( "name", "" ).asString();
+    widget.state = root.get( "state", "" ).asString();
+  }
+}
+```
+
+Now if we create get the MetaData for this type, it will report supporting
+serialization:
+
+```C++
+const auto& metaData = MetaData::create<foo::Widget>();
+
+metaData.canSerialize() == true;
+```
+
+This works because the MetaData type uses ADL (Argument Dependent Lookup) to
+find overloads of the serialize and deserialize functions for the Widget.
+
+Serialization is optional though, and if you choose not to implement these
+functions then there will not be any problems -- you just won't be able to 
+serialize you objects.
 
 ## Conclusion
 
