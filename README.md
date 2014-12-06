@@ -3,6 +3,11 @@ tetra-meta
 
 Tetra-Meta is a very simple C++ meta-data system which facilitates safe type-erasure to hold objects in generic containers.
 
+Tetra-Meta also uses the jsoncpp library to facilitate simple and generic serialization of objects.
+
+Finally, Tetra-Meta also provides utilities for creating type-dictonaries which dramatically simplify the process
+of serializing and deserializing objects.
+
 ==========
 
 Example:
