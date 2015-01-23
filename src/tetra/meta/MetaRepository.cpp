@@ -39,7 +39,7 @@ void MetaRepository::serialize( const Variant& obj,
                                 Json::Value& root ) const
 {
   root["type"] = getTypeName( obj.getMetaData() );
-  
+
   Json::Value object{};
   if ( obj.serialize( object ) ) // serialize
     root["object"] = object;     // only write on success

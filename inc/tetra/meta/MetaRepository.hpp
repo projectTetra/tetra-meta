@@ -43,7 +43,7 @@ public:
    * char, string, wstring.
    **/
   MetaRepository();
-  
+
   // Copy and Move operations are defaulted
   MetaRepository( const MetaRepository& ) = default;
   MetaRepository( MetaRepository&& ) = default;
@@ -57,11 +57,11 @@ public:
   template <typename T>
   void addType( const std::string& typeName )
   {
-    addType( MetaData::create<T>(), typeName );
+    addType( MetaData::get<T>(), typeName );
   }
-  
+
   /**
-   * Returns MetaData for the type which was registered with the 
+   * Returns MetaData for the type which was registered with the
    * given typeName.
    * @throws TypeNotRegistered if the type was not registered.
    * @param typeName The name of the type to look up.

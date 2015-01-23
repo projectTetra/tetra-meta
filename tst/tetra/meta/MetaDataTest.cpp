@@ -17,7 +17,7 @@ SCENARIO( "Creating MetaData for a VectorComponent",
           "[MetaData][Serialization]" )
 {
   const MetaData& metaData =
-    MetaData::create<test::VectorComponent>();
+    MetaData::get<test::VectorComponent>();
 
   GIVEN(
     "MetaData for a VectorComponent which supports serialization" )
@@ -54,7 +54,7 @@ SCENARIO( "Creating MetaData for a VectorComponent",
 
 SCENARIO( "Creating MetaData for a Widget.", "[MetaData]" )
 {
-  const MetaData& metaData = MetaData::create<Widget>();
+  const MetaData& metaData = MetaData::get<Widget>();
 
   GIVEN( "MetaData for a Widget" )
   {
@@ -89,8 +89,8 @@ SCENARIO( "Creating MetaData for a Widget.", "[MetaData]" )
     THEN(
       "All MetaData for a given type should be identically equal" )
     {
-      const MetaData& differentMetaData = MetaData::create<Widget>();
-      
+      const MetaData& differentMetaData = MetaData::get<Widget>();
+
       REQUIRE( &metaData == &differentMetaData );
       REQUIRE( metaData == differentMetaData );
     }

@@ -56,7 +56,7 @@ public:
   static Variant create( T&& toStore ) noexcept
   {
     using Type = typename std::remove_reference<T>::type;
-    Variant v{MetaData::create<Type>()};
+    Variant v{MetaData::get<Type>()};
     v.getObject<Type>() = std::forward<T&&>( toStore );
 
     return v;
@@ -99,7 +99,7 @@ public:
   template <typename T>
   T& getObject() const throw( TypeCastException )
   {
-    if ( metaData != &MetaData::create<T>() )
+    if ( metaData != &MetaData::get<T>() )
     {
       throw TypeCastException{};
     }

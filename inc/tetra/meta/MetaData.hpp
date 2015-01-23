@@ -28,7 +28,7 @@ class MetaData
   using MetaDestructor = void ( * )( void* );
   using MetaSerializer = bool ( * )( void*, Json::Value& );
   using MetaDeserializer = bool (*) ( void*, Json::Value& );
-  
+
   const bool supportsSerialization{false};
   const MetaConstructor typeConstructor;
   const MetaDestructor typeDestructor;
@@ -40,27 +40,28 @@ class MetaData
 
 public:
   /**
-   * Creates a MetaData instance to represent the templated
-   * type.
+   * Retrieves a MetaData instance to represent the templated type.
+   *
    * @templateParam The type to be represented
    * @return MetaData for the template parameter, has program-life
    *         lifetime, and is unique for this type.
    **/
   template <typename T>
-  static const MetaData& create()
+  static const MetaData& get()
   {
-    return MetaDataConstructor < T,
-           HasSerializer<T>::value &&
-             HasDeserializer<T>::value > ::get();
+    return MetaDataConstructor< T,
+             HasSerializer<T>::value &&
+             HasDeserializer<T>::value
+           >::get();
   }
-  
+
   /**
    * MetaData cannot be copied or moved, instances returned by
    * the create method are unique.
    **/
   MetaData( const MetaData& metaData ) = delete;
   MetaData& operator=( const MetaData& metaData ) = delete;
-  
+
   /**
    * Compares two instances of MetaData, true only if they
    * describe the same type.

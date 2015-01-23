@@ -42,7 +42,7 @@ Variant& Variant::operator=( Variant&& variant ) noexcept
 
 bool Variant::serialize( Json::Value& root ) const
 {
-  if (!getMetaData().canSerialize())  
+  if (!getMetaData().canSerialize())
     return false;
 
   return getMetaData().serializeInstance( this->pObj, root );

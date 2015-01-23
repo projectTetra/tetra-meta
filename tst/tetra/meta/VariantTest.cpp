@@ -50,7 +50,7 @@ SCENARIO( "Serializing and Deserializing Variants",
       root["z"] = 23.5f;
 
       REQUIRE( variant.deserialize( root ) );
-      
+
       auto& vectorComponent = variant.getObject<VectorComponent>();
       REQUIRE( vectorComponent.getX() == -4.0f );
       REQUIRE( vectorComponent.getY() == 1000.0f );
@@ -66,7 +66,7 @@ SCENARIO(
   GIVEN( "A Variant constructed with a type's MetaData" )
   {
     {
-      Variant variant = Variant{MetaData::create<Widget>()};
+      Variant variant = Variant{MetaData::get<Widget>()};
 
       THEN(
         "We should see the side-effects of the object being created" )
@@ -78,7 +78,7 @@ SCENARIO(
             "MetaData for the Widget class" )
       {
         REQUIRE( variant.getMetaData() ==
-                 MetaData::create<Widget>() );
+                 MetaData::get<Widget>() );
       }
 
       THEN( "We should be able to retrieve a reference to the actual "
@@ -100,8 +100,8 @@ SCENARIO(
          "existing Variant" )
   {
     {
-      Variant toMove{MetaData::create<Widget>()};
-      Variant variant{MetaData::create<int>()};
+      Variant toMove{MetaData::get<Widget>()};
+      Variant variant{MetaData::get<int>()};
 
       variant = std::move( toMove );
 

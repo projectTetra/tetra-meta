@@ -37,9 +37,9 @@ SCENARIO(
     {
       Json::Value root;
       root["type"] = "Widget";
-      
-      Variant widget = metaRepository.deserialize( root ); 
-      REQUIRE( widget.getMetaData() == MetaData::create<Widget>() );
+
+      Variant widget = metaRepository.deserialize( root );
+      REQUIRE( widget.getMetaData() == MetaData::get<Widget>() );
     }
   }
 
@@ -78,7 +78,7 @@ SCENARIO(
       metaRepository.serialize( vector3d, root );
       REQUIRE( root.get( "type", "" ).asString() ==
                vectorComponentTypeName );
-      
+
       Json::Value component = root.get( "object", "" );
       REQUIRE( component.isObject() );
     }
@@ -97,8 +97,8 @@ SCENARIO(
       root["object"] = component;
 
       Variant var = metaRepository.deserialize( root );
-      REQUIRE( var.getMetaData() == MetaData::create<VectorComponent>() );
-      
+      REQUIRE( var.getMetaData() == MetaData::get<VectorComponent>() );
+
       const auto& vectorComp = var.getObject<VectorComponent>();
       REQUIRE( vectorComp.getX() == 1.0f );
       REQUIRE( vectorComp.getY() == 2.0f );
@@ -111,7 +111,7 @@ SCENARIO(
   "Using the MetaRepository to map names to MetaData instances",
   "[MetaRepository]" )
 {
-  GIVEN( "A MetaRepository" ) 
+  GIVEN( "A MetaRepository" )
   {
     MetaRepository metaRepository{};
 
@@ -120,7 +120,7 @@ SCENARIO(
     {
 #define check( T )                                                   \
   REQUIRE( metaRepository.getMetaData( #T ) ==                       \
-           MetaData::create<T>() );
+           MetaData::get<T>() );
       check(char);
       check(int);
       check(float);
@@ -141,14 +141,14 @@ SCENARIO(
           "types are requested" )
     {
       REQUIRE_THROWS_AS(
-        metaRepository.getTypeName( MetaData::create<Widget>() ),
+        metaRepository.getTypeName( MetaData::get<Widget>() ),
         TypeNotRegisteredException );
     }
 
     THEN( "The getMetaData method should return the correct MetaData "
           "when a registered type name is requested" )
     {
-      REQUIRE( MetaData::create<int>() ==
+      REQUIRE( MetaData::get<int>() ==
                metaRepository.getMetaData( "int" ) );
     }
 
@@ -156,7 +156,7 @@ SCENARIO(
           "when given a registered MetaData instance" )
     {
       REQUIRE( metaRepository.getTypeName(
-                 MetaData::create<float>() ) == "float" );
+                 MetaData::get<float>() ) == "float" );
     }
 
     THEN( "creating an instance of an unregistered type should throw "
@@ -175,7 +175,7 @@ SCENARIO(
         metaRepository.createInstance( "Widget" );
 
       REQUIRE( widgetVariant.getMetaData() ==
-               MetaData::create<Widget>() );
+               MetaData::get<Widget>() );
       REQUIRE( Widget::getInstanceCount() == 1 );
     }
   }
