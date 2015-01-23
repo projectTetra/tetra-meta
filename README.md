@@ -25,7 +25,7 @@ of serializing and deserializing objects.
 ## Compiling
 
 As with all tetra libraries, the provided build uses SCons.
-The SConstruct script does assume that you have clang installed, if that is 
+The SConstruct script does assume that you have clang installed, if that is
 an issue at some point then I can make this configurable.
 
 Tetra-Meta does not have any external dependencies, so it can be downloaded
@@ -48,14 +48,14 @@ Instructions:
 
 ### MetaData
 
-MetaData holds information about how to safely create, destroy, and optionally 
+MetaData holds information about how to safely create, destroy, and optionally
 serialize and deserialize instances of a class.
 MetaData instances are unique to the type that they are created for, and live
 for the duration of the program. Getting access to an instance is as simple
 as:
 
 ```C++
-const MetaData& metaData = MetaData::create<Widget>();
+const MetaData& metaData = MetaData::get<Widget>();
 ```
 This gives us a reference to the unique MetaData instance which describes
 the Widget type.
@@ -109,12 +109,12 @@ for (const auto& msg : messages)
 {
   const MetaData& msgMeta = msg.getMetaData();
 
-  if (msgMeta == MetaData::create<Foo>())
+  if (msgMeta == MetaData::get<Foo>())
   {
     Foo& foo = msg.getObject<Foo>();
     // do foo stuff
   }
-  else if(msgMeta == MetaData::create<Bar>())
+  else if(msgMeta == MetaData::get<Bar>())
   {
     // do bar stuff
   }
@@ -147,7 +147,7 @@ point.deserialize( root );
 
 ### MetaRepository
 
-At this point, it is worth noting that no class names have been 
+At this point, it is worth noting that no class names have been
 serialized. This means that deserializing a JSON blob is only possible
 if you already know what type the blob represents!
 
@@ -187,7 +187,7 @@ This is even better when we deserialize the same json:
 Variant someObject = repository.deserialize( root );
 // now we can use the awesome functionality of the Variant to discover its type
 
-if (someObject.getMetaData() == MetaData::create<Widget>())
+if (someObject.getMetaData() == MetaData::get<Widget>())
   // do widget stuff
 ```
 
@@ -233,7 +233,7 @@ Now if we create get the MetaData for this type, it will report supporting
 serialization:
 
 ```C++
-const auto& metaData = MetaData::create<foo::Widget>();
+const auto& metaData = MetaData::get<foo::Widget>();
 
 metaData.canSerialize() == true;
 ```
@@ -242,13 +242,13 @@ This works because the MetaData type uses ADL (Argument Dependent Lookup) to
 find overloads of the serialize and deserialize functions for the Widget.
 
 Serialization is optional though, and if you choose not to implement these
-functions then there will not be any problems -- you just won't be able to 
+functions then there will not be any problems -- you just won't be able to
 serialize you objects.
 
 ## Conclusion
 
 The real value of having this MetaData available is in what it enables.
-Check out the tetra-message and tetra-framework libraries for some 
+Check out the tetra-message and tetra-framework libraries for some
 applications of the tetra-meta library.
 
 tetra-message is a publish-subscribe messaging system built on the idea of
@@ -264,7 +264,7 @@ makes authoring components super easy and simple.
 My tentative next step (after doing some benchmarking) is to add a
 small-object optimization to the Variant class. This is fairly common
 for implementations of std::string, and could improve performance by
-reducing freestore allocations. 
+reducing freestore allocations.
 
 Although, I probably will not get to this until I see some real usage-based
 evidence that performance needs to be improved.
