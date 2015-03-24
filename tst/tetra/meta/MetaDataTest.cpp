@@ -12,6 +12,7 @@ using namespace std;
 using namespace tetra;
 using namespace tetra::meta;
 using test::Widget;
+using test::VectorComponent;
 
 SCENARIO( "Creating MetaData for a VectorComponent",
           "[MetaData][Serialization]" )
@@ -48,6 +49,21 @@ SCENARIO( "Creating MetaData for a VectorComponent",
       REQUIRE( vc.getX() == 1.0f );
       REQUIRE( vc.getY() == 2.0f );
       REQUIRE( vc.getZ() == 3.0f );
+    }
+
+    THEN( "We should be able to copy VectorComponents" )
+    {
+      VectorComponent* vec1 = reinterpret_cast<VectorComponent*>(
+        metaData.constructInstance() );
+
+      VectorComponent* vec2 = reinterpret_cast<VectorComponent*>(
+        metaData.constructInstance() );
+
+      vec1->setX( 100.0f );
+
+      metaData.copyInstance( vec2, vec1 );
+
+      REQUIRE( vec2->getX() == 100.0f );
     }
   }
 }

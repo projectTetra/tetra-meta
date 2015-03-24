@@ -6,16 +6,19 @@ using namespace tetra;
 using namespace tetra::meta;
 
 MetaData::MetaData( MetaConstructor constructor,
-                    MetaDestructor destructor )
-  : typeConstructor{constructor}, typeDestructor{destructor}
+                    MetaDestructor destructor, MetaCopy copy )
+  : typeCopy{copy}
+  , typeConstructor{constructor}
+  , typeDestructor{destructor}
 {
 }
 
 MetaData::MetaData( MetaConstructor constructor,
-                    MetaDestructor destructor,
+                    MetaDestructor destructor, MetaCopy copy,
                     MetaSerializer serializer,
                     MetaDeserializer deserializer )
   : supportsSerialization{true}
+  , typeCopy{copy}
   , typeConstructor{constructor}
   , typeDestructor{destructor}
   , typeSerializer{serializer}
@@ -36,6 +39,11 @@ void* MetaData::constructInstance() const
 void MetaData::destroyInstance( void* obj ) const noexcept
 {
   this->typeDestructor( obj );
+}
+
+void MetaData::copyInstance( void* lhs, void* rhs ) const noexcept
+{
+  this->typeCopy( lhs, rhs );
 }
 
 bool MetaData::canSerialize() const noexcept

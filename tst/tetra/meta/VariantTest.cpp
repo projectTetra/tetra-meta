@@ -63,6 +63,21 @@ SCENARIO(
   "Variants should be safely hold data using a type's MetaData",
   "[Variant]" )
 {
+  GIVEN( "A Variant holding data" )
+  {
+    Variant toCopy = Variant::create( VectorComponent{} );
+    toCopy.getObject<VectorComponent>().setY( 100.0f );
+
+    THEN( "We should be able to copy the variant and its data into a "
+          "new Variant" )
+    {
+      Variant someVar;
+      someVar.copy( toCopy );
+
+      REQUIRE( someVar.getObject<VectorComponent>().getY() == 100.0f );
+    }
+  }
+
   GIVEN( "A Variant constructed with a type's MetaData" )
   {
     {

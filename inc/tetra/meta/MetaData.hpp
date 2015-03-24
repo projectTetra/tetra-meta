@@ -24,15 +24,17 @@ struct HasDeserializer;
  **/
 class MetaData
 {
-  using MetaConstructor = void* ( * )();
-  using MetaDestructor = void ( * )( void* );
-  using MetaSerializer = bool ( * )( void*, Json::Value& );
+  using MetaConstructor  = void* ( * )();
+  using MetaDestructor   = void ( * )( void* );
+  using MetaCopy         = void ( * )( void*, void* );
+  using MetaSerializer   = bool ( * )( void*, Json::Value& );
   using MetaDeserializer = bool (*) ( void*, Json::Value& );
 
-  const bool supportsSerialization{false};
-  const MetaConstructor typeConstructor;
-  const MetaDestructor typeDestructor;
-  const MetaSerializer typeSerializer{nullptr};
+  const bool             supportsSerialization{false};
+  const MetaCopy         typeCopy;
+  const MetaConstructor  typeConstructor;
+  const MetaDestructor   typeDestructor;
+  const MetaSerializer   typeSerializer{nullptr};
   const MetaDeserializer typeDeserializer{nullptr};
 
   template <class T, bool b>
@@ -91,6 +93,14 @@ public:
   bool canSerialize() const noexcept;
 
   /**
+   * Copy's the data in rhs into lhs using the provided copy
+   * constructor.
+   * @param lhs - The "left hand" side of the copy, gets moodified.
+   * @param rhs - The "right hand" side of the copy, not modified.
+   **/
+  void copyInstance( void* lhs, void* rhs ) const noexcept;
+
+  /**
    * Serializes the object into the Json::Value node.
    * It is an extremely bad idea to call this without checking
    * canSerialize() for this type first!
@@ -109,9 +119,11 @@ public:
   bool deserializeInstance( void* obj, Json::Value& root ) const;
 
 private:
-  MetaData( MetaConstructor constructor, MetaDestructor destructor );
   MetaData( MetaConstructor constructor, MetaDestructor destructor,
-            MetaSerializer serializer,
+            MetaCopy copy );
+
+  MetaData( MetaConstructor constructor, MetaDestructor destructor,
+            MetaCopy copy, MetaSerializer serializer,
             MetaDeserializer deserializer );
 
   template <class T>
@@ -120,7 +132,7 @@ private:
     static const MetaData& get()
     {
       static MetaData metaData( metaConstructor<T>, metaDestructor<T>,
-                                metaSerialize<T>,
+                                metaCopy<T>, metaSerialize<T>,
                                 metaDeserialize<T> );
       return metaData;
     }
@@ -131,8 +143,8 @@ private:
   {
     static const MetaData& get()
     {
-      static MetaData metaData( metaConstructor<T>,
-                                metaDestructor<T> );
+      static MetaData metaData( metaConstructor<T>, metaDestructor<T>,
+                                metaCopy<T> );
       return metaData;
     }
   };
@@ -159,6 +171,12 @@ private:
   static void metaDestructor( void* obj )
   {
     delete reinterpret_cast<T*>( obj );
+  }
+
+  template <typename T>
+  static void metaCopy( void* lhs, void* rhs )
+  {
+    *reinterpret_cast<T*>( lhs ) = *reinterpret_cast<T*>( rhs );
   }
 };
 

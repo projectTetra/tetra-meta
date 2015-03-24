@@ -68,9 +68,9 @@ public:
   ~Variant();
 
   /**
-   * Variants are not copyable, if you must copy
-   * a variant then use the Variant::create method along
-   * with the getObject method. (e.g. create(v.getObject()))
+   * Variants do not support copy operations. (this avoid ambiguity as
+   * moving a variant is fundamentally different from copyng the
+   * contents of a variant.)
    **/
   Variant( const Variant& ) = delete;
   Variant& operator=( const Variant& ) = delete;
@@ -81,6 +81,12 @@ public:
    **/
   Variant( Variant&& variant ) noexcept;
   Variant& operator=( Variant&& variant ) noexcept;
+
+  /**
+   * Copies the payload and type of the provided variant.
+   * @param variant - The variant to copy from.
+   **/
+  void copy( const Variant& variant ) noexcept;
 
   /**
    * Returns the MetaData which describes this Variant's payload.

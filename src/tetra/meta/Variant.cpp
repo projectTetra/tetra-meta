@@ -40,6 +40,19 @@ Variant& Variant::operator=( Variant&& variant ) noexcept
   return *this;
 }
 
+void Variant::copy( const Variant& variant ) noexcept
+{
+  if ( pObj != nullptr && metaData != nullptr )
+  {
+    metaData->destroyInstance( pObj );
+  }
+
+  metaData = variant.metaData;
+  pObj     = metaData->constructInstance();
+
+  metaData->copyInstance( pObj, variant.pObj );
+}
+
 bool Variant::serialize( Json::Value& root ) const
 {
   if (!getMetaData().canSerialize())
