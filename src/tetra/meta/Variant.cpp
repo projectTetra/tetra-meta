@@ -45,12 +45,17 @@ void Variant::copy( const Variant& variant ) noexcept
   if ( pObj != nullptr && metaData != nullptr )
   {
     metaData->destroyInstance( pObj );
+    pObj = nullptr;
+    metaData = nullptr;
   }
 
-  metaData = variant.metaData;
-  pObj     = metaData->constructInstance();
+  if ( variant.metaData != nullptr && variant.pObj != nullptr )
+  {
+    metaData = variant.metaData;
+    pObj = metaData->constructInstance();
 
-  metaData->copyInstance( pObj, variant.pObj );
+    metaData->copyInstance( pObj, variant.pObj );
+  }
 }
 
 bool Variant::serialize( Json::Value& root ) const
